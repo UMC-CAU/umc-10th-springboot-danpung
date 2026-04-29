@@ -1,11 +1,12 @@
 package com.example.umc10th.domain.mission.dto;
 
-import lombok.Getter;
+import lombok.Builder;
 
 public class MissionReqDTO {
-    @Getter
-    public static class CompleteMissionDTO{
-        Long missionID;
-    }
+
+    @Builder
+    public record CompleteMissionDTO(
+            Long missionId
+    ) {}
 
 }

@@ -7,12 +7,12 @@ public class ReviewConverter {
 
     public static ReviewResDTO.CreateResultDTO toCreateReviewResultDTO(ReviewReqDTO.PostReviewDTO request) {
         return ReviewResDTO.CreateResultDTO.builder()
-                .userID(23L)
+                .userId(23L)
                 .reviewId(101L)
-                .storeName(request.getStoreName())
-                .context(request.getContext())
-                .stars(request.getStars())
-                .images(request.getImages())
+                .storeName(request.storeName())
+                .context(request.context())
+                .stars(request.stars())
+                .images(request.images())
                 .build();
     }
 }

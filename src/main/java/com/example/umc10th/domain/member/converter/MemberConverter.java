@@ -34,7 +34,7 @@ public class MemberConverter {
     }
     public static MemberResDTO.SignUpResultDTO toSignUpResultDTO() {
         return MemberResDTO.SignUpResultDTO.builder()
-                .memberID(1L)
+                .memberId(1L)
                 .createdAt(java.time.LocalDateTime.now())
                 .build();
     }
