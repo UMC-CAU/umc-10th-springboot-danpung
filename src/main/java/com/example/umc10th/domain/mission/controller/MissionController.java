@@ -5,6 +5,7 @@ import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.mission.exception.code.MissionSuccessCode;
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class MissionController {
     }
     @PatchMapping("/completed")
     public ApiResponse<String> completeMission(
-            @RequestBody MissionReqDTO.CompleteMissionDTO request
+            @RequestBody @Valid MissionReqDTO.CompleteMissionDTO request
     ){
         //Jpa로 completed로 바꿔주기
         return ApiResponse.onSuccess(MissionSuccessCode.MISSION_COMPLETE_SUCCESS, MissionConverter.toCompleteResult());

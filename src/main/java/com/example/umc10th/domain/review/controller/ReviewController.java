@@ -5,6 +5,7 @@ import com.example.umc10th.domain.review.dto.ReviewReqDTO;
 import com.example.umc10th.domain.review.dto.ReviewResDTO;
 import com.example.umc10th.domain.review.exception.code.ReviewSuccessCode;
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,13 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/review")
+@RequestMapping("/api/reviews")
 public class ReviewController {
-    @PostMapping("/mypage")
-    public ApiResponse<ReviewResDTO.CreateResultDTO> createReview(
-            @RequestBody ReviewReqDTO.PostReviewDTO request
-    ) {
-        return ApiResponse.onSuccess(ReviewSuccessCode.REVIEW_POST_SUCCESS, ReviewConverter.toCreateReviewResultDTO(request));
-    }
 
+    @PostMapping
+    public ApiResponse<ReviewResDTO.CreateResultDTO> createReview(
+            @RequestBody @Valid ReviewReqDTO.PostReviewDTO request
+    ) {
+        return ApiResponse.onSuccess(
+                ReviewSuccessCode.REVIEW_POST_SUCCESS,
+                ReviewConverter.toCreateReviewResultDTO(request)
+        );
+    }
 }
