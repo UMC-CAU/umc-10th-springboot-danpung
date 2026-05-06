@@ -9,7 +9,10 @@ public class MissionReqDTO {
     public record CompleteMissionDTO(
 
             @NotNull
-            Long missionId
+            Long missionId,
+
+            @NotNull
+            Long memberId
     ) {}
 
 }

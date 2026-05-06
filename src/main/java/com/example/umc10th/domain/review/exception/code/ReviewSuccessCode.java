@@ -10,8 +10,12 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ReviewSuccessCode implements BaseSuccessCode {
     REVIEW_POST_SUCCESS(HttpStatus.CREATED, "REVIEW201_1", "리뷰 작성에 성공했습니다."),
+    REVIEW_GET_SUCCESS(HttpStatus.OK, "REVIEW200_1", "리뷰 목록 조회에 성공했습니다."),
     REVIEW_DELETE_SUCCESS(HttpStatus.OK, "REVIEW200_2", "리뷰 삭제에 성공했습니다."),
-    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "REVIEW200_3", "리뷰 수정에 성공했습니다.");
+    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "REVIEW200_3", "리뷰 수정에 성공했습니다."),
+    REPLY_POST_SUCCESS(HttpStatus.CREATED, "REVIEW201_4", "댓글 작성에 성공했습니다."),
+    REPLY_DELETE_SUCCESS(HttpStatus.OK, "REVIEW200_5", "댓글 삭제에 성공했습니다."),
+    REPLY_UPDATE_SUCCESS(HttpStatus.OK, "REVIEW200_6", "댓글 수정에 성공했습니다.");
 
     private final HttpStatus status;
     private final String code;
