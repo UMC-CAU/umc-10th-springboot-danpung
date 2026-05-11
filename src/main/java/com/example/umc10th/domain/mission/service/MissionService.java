@@ -1,14 +1,18 @@
 package com.example.umc10th.domain.mission.service;
 
+import com.example.umc10th.domain.mission.converter.MissionConverter;
 import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.mission.entity.Mission;
+import com.example.umc10th.domain.mission.entity.Store;
 import com.example.umc10th.domain.mission.entity.mapping.MemberMission;
+import com.example.umc10th.domain.mission.exception.StoreException;
+import com.example.umc10th.domain.mission.exception.code.StoreErrorCode;
 import com.example.umc10th.domain.mission.repository.MemberMissionRepository;
 import com.example.umc10th.domain.mission.repository.MissionRepository;
+import com.example.umc10th.domain.mission.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class MissionService {
     private final MemberMissionRepository memberMissionRepository;
+    private final StoreRepository storeRepository;
     public Page<MissionResDTO.MissionDetailDTO> getMyMissions(
             Long memberId,
             Boolean isCompleted,
@@ -67,4 +72,56 @@ public class MissionService {
         return "미션 완료 처리 성공";
     }
 
+    @Transactional
+    public MissionResDTO.GetMission createMission(Long storeId, MissionReqDTO.CreateMission request) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+
+        Mission mission = MissionConverter.toMission(request, store);
+        Mission savedMission = missionRepository.save(mission);
+        return MissionConverter.toGetMissionDTO(savedMission);
+    }
+
+    public MissionResDTO.Pagination<MissionResDTO.GetMission> getMissions(
+            Long storeId,
+            Integer pageSize,
+            String cursor,
+            String query
+    ) {
+        PageRequest pageRequest = PageRequest.of(0,pageSize);
+
+        long idCursor;
+        Slice<Mission> missionList;
+        String nextCursor;
+
+        if (cursor != null && !cursor.equals("-1")) {
+            String[] cursorSplit = cursor.split(":");
+            switch (query.toLowerCase()){
+                case "id":
+                    idCursor = Long.parseLong(cursorSplit[1]);
+
+                    missionList = missionRepository.findMissionsByStore_StoreIdAndMissionIdLessThanOrderByMissionIdDesc(
+                            storeId,
+                            idCursor,
+                            pageRequest
+                    );
+                    break;
+                default:
+                    throw new IllegalArgumentException("지원하지 않는 query입니다.");
+            }
+        } else {
+            missionList = missionRepository.findMissionsByStore_StoreIdOrderByMissionIdDesc(storeId, pageRequest);
+        }
+
+        nextCursor = missionList.hasContent()
+                ? missionList.getContent().getLast().getMissionId() + ":" + missionList.getContent().getLast().getMissionId()
+                : "-1";
+
+        return MissionConverter.toPagination(
+                missionList.map(MissionConverter::toGetMissionDTO).getContent(),
+                missionList.hasNext(),
+                nextCursor,
+                missionList.getSize()
+        );
+    }
 }

@@ -3,6 +3,7 @@ package com.example.umc10th.domain.mission.repository;
 import com.example.umc10th.domain.mission.entity.Mission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,6 +25,16 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     Page<Mission> findAvailableMissions(
             @Param("memberId") Long memberId,
             @Param("locationId") Long locationId,
+            Pageable pageable
+    );
+
+    Page<Mission> findAllByStore_StoreId(Long storeId, Pageable pageable);
+
+    Slice<Mission> findMissionsByStore_StoreIdOrderByMissionIdDesc(Long storeId, Pageable pageable);
+
+    Slice<Mission> findMissionsByStore_StoreIdAndMissionIdLessThanOrderByMissionIdDesc(
+            Long storeId,
+            Long missionId,
             Pageable pageable
     );
 }

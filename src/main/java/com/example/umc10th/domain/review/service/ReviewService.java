@@ -12,9 +12,13 @@ import com.example.umc10th.domain.review.repository.ReplyRepository;
 import com.example.umc10th.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -84,5 +88,83 @@ public class ReviewService {
                 .createdAt(review.getCreatedAt())
                 .replyContent(review.getReply() == null ? null : review.getReply().getContent())
                 .build());
+    }
+    public ReviewResDTO.Pagination<ReviewResDTO.MyReviewDTO> getMyReviews(
+            Long memberId,
+            Integer pageSize,
+            String cursor,
+            String query
+    ){
+        PageRequest pageRequest = PageRequest.of(0, pageSize);
+
+        Slice<Review> reviewList;
+        String nextCursor;
+
+        if (cursor != null && !cursor.equals("-1")) {
+            String[] cursorSplit = cursor.split(":");
+
+            switch (query.toLowerCase()) {
+                case "id":
+                    Long reviewIdCursor = Long.parseLong(cursorSplit[1]);
+                    reviewList = reviewRepository.findReviewsByMember_MemberIdAndReviewIdLessThanOrderByReviewIdDesc(
+                            memberId,
+                            reviewIdCursor,
+                            pageRequest
+                    );
+                    break;
+                case "star":
+                    Double starCursor = Double.parseDouble(cursorSplit[0]);
+                    Long starReviewIdCursor = Long.parseLong(cursorSplit[1]);
+                    reviewList = reviewRepository.findMyReviewsOrderByStarWithCursor(
+                            memberId,
+                            starCursor,
+                            starReviewIdCursor,
+                            pageRequest
+                    );
+                    break;
+                default:
+                    throw new IllegalArgumentException("지원하지 않는 query입니다.");
+            }
+        } else {
+            switch (query.toLowerCase()) {
+                case "id":
+                    reviewList = reviewRepository.findReviewsByMember_MemberIdOrderByReviewIdDesc(memberId, pageRequest);
+                    break;
+                case "star":
+                    reviewList = reviewRepository.findMyReviewsOrderByStar(memberId, pageRequest);
+                    break;
+                default:
+                    throw new IllegalArgumentException("지원하지 않는 query입니다.");
+            }
+        }
+
+        List<ReviewResDTO.MyReviewDTO> reviews = reviewList.map(review -> ReviewResDTO.MyReviewDTO.builder()
+                .reviewId(review.getReviewId())
+                .storeId(review.getStore().getStoreId())
+                .storeName(review.getStore().getName())
+                .content(review.getContent())
+                .star(review.getStar())
+                .createdAt(review.getCreatedAt())
+                .replyContent(review.getReply() == null ? null : review.getReply().getContent())
+                .build()).getContent();
+
+        nextCursor = reviewList.hasContent()
+                ? createNextCursor(reviewList.getContent().getLast(), query)
+                : "-1";
+
+        return ReviewResDTO.Pagination.<ReviewResDTO.MyReviewDTO>builder()
+                .data(reviews)
+                .hasNext(reviewList.hasNext())
+                .nextCursor(nextCursor)
+                .pageSize(reviewList.getSize())
+                .build();
+    }
+
+    private String createNextCursor(Review review, String query) {
+        return switch (query.toLowerCase()) {
+            case "id" -> review.getReviewId() + ":" + review.getReviewId();
+            case "star" -> review.getStar() + ":" + review.getReviewId();
+            default -> throw new IllegalArgumentException("지원하지 않는 query입니다.");
+        };
     }
 }

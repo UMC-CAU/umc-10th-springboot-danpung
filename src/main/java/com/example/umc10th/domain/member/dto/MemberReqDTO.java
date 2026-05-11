@@ -21,7 +21,7 @@ public class MemberReqDTO {
 
             @NotBlank
             String password,
-
+            @NotBlank
             String phoneNumber,
 
             List<@NotBlank String> preferFoods,

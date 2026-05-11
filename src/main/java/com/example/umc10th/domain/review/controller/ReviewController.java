@@ -50,4 +50,17 @@ public class ReviewController {
                 reviewService.getStoreReviews(storeId, PageRequest.of(page, size))
         );
     }
+
+    @GetMapping("/me")
+    public ApiResponse<ReviewResDTO.Pagination<ReviewResDTO.MyReviewDTO>> getMyReviews(
+            @RequestParam Long memberId,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "-1") String cursor,
+            @RequestParam(defaultValue = "id") String query
+    ) {
+        return ApiResponse.onSuccess(
+                ReviewSuccessCode.REVIEW_GET_SUCCESS,
+                reviewService.getMyReviews(memberId, pageSize, cursor, query)
+        );
+    }
 }

@@ -52,4 +52,26 @@ public class MissionController {
                 missionService.getAvailableMissions(memberId, locationId, PageRequest.of(page, size))
         );
     }
+    @PostMapping("/stores/{storeId}/missions")
+    public ApiResponse<MissionResDTO.GetMission> createMission(
+            @PathVariable Long storeId,
+            @RequestBody @Valid MissionReqDTO.CreateMission dto
+    ){
+        return ApiResponse.onSuccess(
+                MissionSuccessCode.MISSION_CREATE_SUCCESS,
+                missionService.createMission(storeId, dto)
+        );
+    }
+    @GetMapping("/stores/{storeId}/missions")
+    public ApiResponse<MissionResDTO.Pagination<MissionResDTO.GetMission>> getMissions(
+            @PathVariable Long storeId,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "-1") String cursor,
+            @RequestParam(defaultValue = "id") String query
+    ) {
+        return ApiResponse.onSuccess(
+                MissionSuccessCode.MISSION_LIST_SUCCESS,
+                missionService.getMissions(storeId, pageSize, cursor, query)
+        );
+    }
 }
