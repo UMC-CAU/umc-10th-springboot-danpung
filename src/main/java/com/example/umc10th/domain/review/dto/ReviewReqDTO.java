@@ -9,15 +9,22 @@ import java.util.List;
 public class ReviewReqDTO {
     @Builder
     public record PostReviewDTO(
-            @NotBlank
-            String storeName,
-
-            @NotBlank
-            String context,
+            @NotNull
+            Long memberId,
 
             @NotNull
-            Integer stars,
+            Long storeId,
+
+            @NotBlank
+            String content,
+
+            @NotNull
+            Double star,
 
             List<@NotBlank String> images
             ){}
+
+    public record CreateReplyDTO(
+            @NotBlank String content
+    ) {}
 }

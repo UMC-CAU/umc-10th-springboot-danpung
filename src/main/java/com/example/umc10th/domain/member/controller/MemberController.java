@@ -4,6 +4,7 @@ import com.example.umc10th.domain.member.converter.MemberConverter;
 import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.dto.MemberResDTO;
 import com.example.umc10th.domain.member.exception.code.MemberSuccessCode;
+import com.example.umc10th.domain.member.service.MemberService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +14,28 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
+
+    private final MemberService memberService;
+
     @GetMapping("/me/home")
     public ApiResponse<MemberResDTO.HomeDTO> getMemberHome() {
         return ApiResponse.onSuccess(MemberSuccessCode.MEMBER_HOME_SUCCESS, MemberConverter.toHomeDTO());
     }
+
     @PostMapping("/signup")
     public ApiResponse<MemberResDTO.SignUpResultDTO> signUp(
             @RequestBody @Valid MemberReqDTO.SignUp request
     ){
-        return ApiResponse.onSuccess(MemberSuccessCode.JOIN_SUCCESS, MemberConverter.toSignUpResultDTO());
+        return ApiResponse.onSuccess(MemberSuccessCode.JOIN_SUCCESS, memberService.signUp(request));
+    }
+
+    @GetMapping("/{memberId}/mypage")
+    public ApiResponse<MemberResDTO.MyPageDTO> getMyPage(
+            @PathVariable Long memberId
+    ) {
+        return ApiResponse.onSuccess(
+                MemberSuccessCode.MEMBER_HOME_SUCCESS,
+                memberService.getMyPage(memberId)
+        );
     }
 }
