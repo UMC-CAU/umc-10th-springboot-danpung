@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MissionService {
     private final MemberMissionRepository memberMissionRepository;
     private final StoreRepository storeRepository;
-    public Page<MissionResDTO.MissionDetailDTO> getMyMissions(
+    public MissionResDTO.Pagination<MissionResDTO.MissionDetailDTO> getMyMissions(
             Long memberId,
             Boolean isCompleted,
             Pageable pageable
@@ -31,7 +31,7 @@ public class MissionService {
         Page<MemberMission> memberMissions =
                 memberMissionRepository.findMyMissions(memberId, isCompleted, pageable);
 
-        return memberMissions.map(memberMission -> MissionResDTO.MissionDetailDTO.builder()
+        Page<MissionResDTO.MissionDetailDTO> missions = memberMissions.map(memberMission -> MissionResDTO.MissionDetailDTO.builder()
                 .missionId(memberMission.getMission().getMissionId())
                 .status(memberMission.getIsCompleted() ? "COMPLETED" : "CHALLENGING")
                 .points(memberMission.getMission().getPoint())
@@ -39,6 +39,17 @@ public class MissionService {
                 .storeName(memberMission.getMission().getStore().getName())
                 .images(null)
                 .build());
+
+        String nextCursor = missions.hasNext()
+                ? String.valueOf(missions.getNumber() + 1)
+                : "-1";
+
+        return MissionConverter.toPagination(
+                missions.getContent(),
+                missions.hasNext(),
+                nextCursor,
+                missions.getSize()
+        );
     }
     private final MissionRepository missionRepository;
     public Page<MissionResDTO.MissionDetailDTO> getAvailableMissions(

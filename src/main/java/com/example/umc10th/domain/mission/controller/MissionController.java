@@ -6,12 +6,18 @@ import com.example.umc10th.domain.mission.exception.code.MissionSuccessCode;
 import com.example.umc10th.domain.mission.service.MissionService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/missions")
 public class MissionController {
@@ -19,11 +25,11 @@ public class MissionController {
     private final MissionService missionService;
 
     @GetMapping("/me")
-    public ApiResponse<Page<MissionResDTO.MissionDetailDTO>> getMyMissions(
-            @RequestParam Long memberId,
-            @RequestParam Boolean isCompleted,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+    public ApiResponse<MissionResDTO.Pagination<MissionResDTO.MissionDetailDTO>> getMyMissions(
+            @RequestParam @Positive Long memberId,
+            @RequestParam @NotNull Boolean isCompleted,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer page,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         return ApiResponse.onSuccess(
                 MissionSuccessCode.MISSION_LIST_SUCCESS,
@@ -42,10 +48,10 @@ public class MissionController {
     }
     @GetMapping("/available")
     public ApiResponse<Page<MissionResDTO.MissionDetailDTO>> getAvailableMissions(
-            @RequestParam Long memberId,
-            @RequestParam Long locationId,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam @Positive Long memberId,
+            @RequestParam @Positive Long locationId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer page,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         return ApiResponse.onSuccess(
                 MissionSuccessCode.MISSION_LIST_SUCCESS,
@@ -54,7 +60,7 @@ public class MissionController {
     }
     @PostMapping("/stores/{storeId}/missions")
     public ApiResponse<MissionResDTO.GetMission> createMission(
-            @PathVariable Long storeId,
+            @PathVariable @Positive Long storeId,
             @RequestBody @Valid MissionReqDTO.CreateMission dto
     ){
         return ApiResponse.onSuccess(
@@ -64,10 +70,10 @@ public class MissionController {
     }
     @GetMapping("/stores/{storeId}/missions")
     public ApiResponse<MissionResDTO.Pagination<MissionResDTO.GetMission>> getMissions(
-            @PathVariable Long storeId,
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "-1") String cursor,
-            @RequestParam(defaultValue = "id") String query
+            @PathVariable @Positive Long storeId,
+            @RequestParam(defaultValue = "10") @Positive Integer pageSize,
+            @RequestParam(defaultValue = "-1") @NotBlank String cursor,
+            @RequestParam(defaultValue = "id") @NotBlank String query
     ) {
         return ApiResponse.onSuccess(
                 MissionSuccessCode.MISSION_LIST_SUCCESS,
