@@ -1,6 +1,9 @@
 package com.example.umc10th.domain.mission.converter;
 
+import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
+import com.example.umc10th.domain.mission.entity.Mission;
+import com.example.umc10th.domain.mission.entity.Store;
 import java.util.List;
 
 public class MissionConverter {
@@ -23,5 +26,35 @@ public class MissionConverter {
 
     public static String toCompleteResult() {
         return null;
+    }
+
+    public static Mission toMission(MissionReqDTO.CreateMission request, Store store) {
+        return Mission.builder()
+                .store(store)
+                .deadline(request.deadline())
+                .point(request.point())
+                .text(request.conditional())
+                .build();
+    }
+
+    public static MissionResDTO.GetMission toGetMissionDTO(Mission mission) {
+        return MissionResDTO.GetMission.builder()
+                .missionId(mission.getMissionId())
+                .point(mission.getPoint())
+                .conditional(mission.getText())
+                .build();
+    }
+    public static <T> MissionResDTO.Pagination<T> toPagination(
+            List<T> data,
+            Boolean hasNext,
+            String nextCursor,
+            Integer pageSize
+    ){
+        return MissionResDTO.Pagination.<T>builder()
+                .data(data)
+                .hasNext(hasNext)
+                .nextCursor(nextCursor)
+                .pageSize(pageSize)
+                .build();
     }
 }

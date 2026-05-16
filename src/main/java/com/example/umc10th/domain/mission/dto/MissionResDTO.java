@@ -20,4 +20,17 @@ public class MissionResDTO {
             String storeName,
             List<String> images
     ) {}
+    @Builder
+    public record GetMission(
+            Long missionId,
+            Integer point,
+            String conditional
+    ){}
+    @Builder
+    public record Pagination<T>(
+            List<T> data,
+            Boolean hasNext,
+            String nextCursor,
+            Integer pageSize
+    ){}
 }

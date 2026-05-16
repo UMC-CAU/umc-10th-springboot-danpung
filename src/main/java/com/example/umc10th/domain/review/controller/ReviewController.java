@@ -6,12 +6,17 @@ import com.example.umc10th.domain.review.exception.code.ReviewSuccessCode;
 import com.example.umc10th.domain.review.service.ReviewService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews")
 public class ReviewController {
@@ -30,7 +35,7 @@ public class ReviewController {
 
     @PostMapping("/{reviewId}/replies")
     public ApiResponse<ReviewResDTO.ReplyResultDTO> createReply(
-            @PathVariable Long reviewId,
+            @PathVariable @Positive Long reviewId,
             @RequestBody @Valid ReviewReqDTO.CreateReplyDTO request
     ) {
         return ApiResponse.onSuccess(
@@ -41,13 +46,26 @@ public class ReviewController {
 
     @GetMapping("/stores/{storeId}")
     public ApiResponse<Page<ReviewResDTO.StoreReviewDTO>> getStoreReviews(
-            @PathVariable Long storeId,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @PathVariable @Positive Long storeId,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer page,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         return ApiResponse.onSuccess(
                 ReviewSuccessCode.REVIEW_GET_SUCCESS,
                 reviewService.getStoreReviews(storeId, PageRequest.of(page, size))
+        );
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<ReviewResDTO.Pagination<ReviewResDTO.MyReviewDTO>> getMyReviews(
+            @RequestParam @Positive Long memberId,
+            @RequestParam(defaultValue = "10") @Positive Integer pageSize,
+            @RequestParam(defaultValue = "-1") @NotBlank String cursor,
+            @RequestParam(defaultValue = "id") @NotBlank String query
+    ) {
+        return ApiResponse.onSuccess(
+                ReviewSuccessCode.REVIEW_GET_SUCCESS,
+                reviewService.getMyReviews(memberId, pageSize, cursor, query)
         );
     }
 }

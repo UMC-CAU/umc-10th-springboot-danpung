@@ -1,6 +1,7 @@
 package com.example.umc10th.domain.review.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -21,6 +22,7 @@ public class ReviewReqDTO {
             @NotNull
             Double star,
 
+            @NotEmpty
             List<@NotBlank String> images
             ){}
 

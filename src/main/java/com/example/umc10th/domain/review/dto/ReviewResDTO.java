@@ -29,4 +29,25 @@ public class ReviewResDTO {
             LocalDateTime createdAt,
             String replyContent
     ){}
+    @Builder
+    public record MyReviewDTO(
+            Long reviewId,
+            Long storeId,
+            String storeName,
+            String content,
+            Double star,
+            LocalDateTime createdAt,
+            String replyContent
+    ){}
+    public record ReviewListDTO(
+            Long storeId,
+            List<StoreReviewDTO> reviews
+    ){}
+    @Builder
+    public record Pagination<T>(
+            List<T> data,
+            Boolean hasNext,
+            String nextCursor,
+            Integer pageSize
+    ){}
 }
