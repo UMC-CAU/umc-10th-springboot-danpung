@@ -1,4 +1,4 @@
-package com.example.umc10th.global.security.filter;
+package com.example.umc10th.global.security.exception;
 
 import com.example.umc10th.global.code.BaseErrorCode;
 import com.example.umc10th.global.code.GeneralErrorCode;

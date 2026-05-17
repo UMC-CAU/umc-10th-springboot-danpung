@@ -1,7 +1,7 @@
 package com.example.umc10th.global.config;
 
-import com.example.umc10th.global.security.filter.CustomAccessDenied;
-import com.example.umc10th.global.security.filter.CustomEntryPoint;
+import com.example.umc10th.global.security.exception.CustomAccessDenied;
+import com.example.umc10th.global.security.exception.CustomEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
