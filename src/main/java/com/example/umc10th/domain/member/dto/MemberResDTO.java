@@ -26,8 +26,10 @@ public class MemberResDTO {
     ) {}
 
     @Builder
-    public record SignUpResultDTO(
+    public record SignupResultDTO(
             Long memberId,
+            String name,
+            String email,
             LocalDateTime createdAt
     ) {}
     @Builder
@@ -39,5 +41,4 @@ public class MemberResDTO {
             Integer point,
             Long reviewCount
     ) {}
-
 }
