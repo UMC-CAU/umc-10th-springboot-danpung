@@ -33,6 +33,7 @@ public class MemberReqDTO {
 
             List<String> foodList,
 
+            @NotBlank
             @Email
             String email,
 
@@ -57,4 +58,13 @@ public class MemberReqDTO {
             Boolean marketing
 
     ) {}
+
+    public record LoginReqDTO(
+            @NotBlank
+            @Email
+            String email,
+
+            @NotBlank
+            String password
+    ){}
 }

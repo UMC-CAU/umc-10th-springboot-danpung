@@ -20,14 +20,12 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, length = 50)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Gender gender;
 
     private LocalDate birthday;
@@ -38,6 +36,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
+
+    @Column(nullable = false, length = 100)
+    private String socialUid;
 
     @Column(nullable = false, length = 50)
     private String email;
