@@ -26,8 +26,8 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ApiResponse<MemberResDTO.SignUpResultDTO> signUp(
-            @RequestBody @Valid MemberReqDTO.SignUp request
+    public ApiResponse<MemberResDTO.SignupResultDTO> signUp(
+            @RequestBody @Valid MemberReqDTO.SignupReqDTO request
     ){
         return ApiResponse.onSuccess(MemberSuccessCode.JOIN_SUCCESS, memberService.signUp(request));
     }
@@ -37,7 +37,7 @@ public class MemberController {
             @PathVariable @Positive Long memberId
     ) {
         return ApiResponse.onSuccess(
-                MemberSuccessCode.MEMBER_HOME_SUCCESS,
+                MemberSuccessCode.MY_PAGE_SUCCESS,
                 memberService.getMyPage(memberId)
         );
     }

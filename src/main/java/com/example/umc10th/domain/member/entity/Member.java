@@ -20,6 +20,9 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false, length = 50)
     private String name;
 

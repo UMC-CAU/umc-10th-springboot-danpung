@@ -11,7 +11,8 @@ public enum MemberSuccessCode implements BaseSuccessCode {
 
     JOIN_SUCCESS(HttpStatus.CREATED, "MEMBER201_1", "회원가입이 완료되었습니다."),
     LOGIN_SUCCESS(HttpStatus.OK, "MEMBER200_1", "로그인에 성공했습니다."),
-    MEMBER_HOME_SUCCESS(HttpStatus.OK, "MEMBER200_2", "회원 홈 화면 조회에 성공했습니다.");
+    MEMBER_HOME_SUCCESS(HttpStatus.OK, "MEMBER200_2", "회원 홈 화면 조회에 성공했습니다."),
+    MY_PAGE_SUCCESS(HttpStatus.OK, "MEMBER200_3", "마이페이지 조회에 성공했습니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
