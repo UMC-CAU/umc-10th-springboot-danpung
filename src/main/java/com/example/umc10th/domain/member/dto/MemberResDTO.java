@@ -41,4 +41,9 @@ public class MemberResDTO {
             Integer point,
             Long reviewCount
     ) {}
+
+    @Builder
+    public record LoginResDTO(
+            String accessToken
+    ){}
 }

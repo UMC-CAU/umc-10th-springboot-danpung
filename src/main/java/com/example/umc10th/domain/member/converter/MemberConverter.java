@@ -4,6 +4,7 @@ import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.dto.MemberResDTO;
 import com.example.umc10th.domain.member.entity.Member;
 import com.example.umc10th.domain.member.enums.SocialType;
+import com.example.umc10th.global.security.dto.OAuthDTO;
 
 import java.util.List;
 
@@ -17,6 +18,17 @@ public class MemberConverter {
                 .email(request.email())
                 .password(encodedPassword)
                 .socialType(SocialType.LOCAL)
+                .socialUid(request.email())
+                .point(0)
+                .build();
+    }
+
+    public static Member toMember(OAuthDTO dto) {
+        return Member.builder()
+                .name(dto.getName())
+                .email(dto.getSocialEmail())
+                .socialType(dto.getSocialType())
+                .socialUid(dto.getSocialUid())
                 .point(0)
                 .build();
     }
@@ -49,6 +61,12 @@ public class MemberConverter {
                 .isAlarm(false)
                 .completedMissionCount(0)
                 .missions(List.of())
+                .build();
+    }
+
+    public static MemberResDTO.LoginResDTO toLogin(String accessToken) {
+        return MemberResDTO.LoginResDTO.builder()
+                .accessToken(accessToken)
                 .build();
     }
 }

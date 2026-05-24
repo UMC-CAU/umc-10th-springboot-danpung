@@ -1,6 +1,8 @@
 package com.example.umc10th.global.apiPayload.exception;
 
 import com.example.umc10th.global.apiPayload.ApiResponse;
+import com.example.umc10th.domain.member.exception.MemberException;
+import com.example.umc10th.domain.member.exception.code.MemberErrorCode;
 import com.example.umc10th.global.code.BaseErrorCode;
 import com.example.umc10th.global.code.GeneralErrorCode;
 import jakarta.validation.ConstraintViolationException;
@@ -18,6 +20,13 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GeneralExceptionAdvice {
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMemberException(MemberException e) {
+        MemberErrorCode code = e.getErrorCode();
+        return ResponseEntity.status(code.getStatus())
+                .body(ApiResponse.onFailure(code, null));
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleMethodArgumentNotValidException(
